@@ -1,0 +1,177 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggfortify)
+library(viridis)
+
+library(mvtnorm)
+```
+
+
+```{r}
+G <- 100
+S <- diag(G)
+mu1 <- rep(0.5, G)
+mu2 <- rep(-0.5, G)
+```
+
+```{r}
+1
+```
+
+```{r}
+image(S)
+```
+
+```{r}
+data1 <- rmvnorm(300, mu1, S)
+data2 <- rmvnorm(300, mu2, S)
+data <- rbind(data1, data2)
+```
+
+```{r}
+image(data)
+```
+```{r}
+df <- gather(as.data.frame(data))
+ggplot(df, aes(x='V1', y='V2')) + geom_point()
+```
+
+```{r}
+as.data.frame(data)
+```
+
+
+
+```{r}
+df <- as.data.frame(data)
+df <- mutate(df, cell = row_number())
+df <- gather(df, 'gene', 'expression', -cell)
+```
+
+```{r}
+ggplot(df, aes(x=cell, y=gene)) + geom_tile(aes(fill=expression)) + theme_minimal() + scale_fill_viridis()
+```
+
+
+
+```{r}
+autoplot(prcomp(data, scale. = TRUE)) + theme_classic()
+```
+
+```{r}
+F_G <- 20
+A11 <- matrix(0.9, F_G, F_G)
+O12 <- matrix(0, F_G, G - F_G)
+O22 <- matrix(0, G - F_G, G - F_G)
+
+S1 <- rbind(cbind(A11, O12),
+            cbind(t(O12), O22))
+diag(S1) <- 1.
+
+S2 <- rbind(cbind(O22, t(O12)),
+            cbind(O12, A11))
+diag(S2) <- 1.
+
+```
+
+```{r}
+
+```
+
+
+
+```{r}
+image(S2)
+```
+
+
+
+```{r}
+data1 <- rmvnorm(300, mu1, S1)
+data2 <- rmvnorm(300, mu1, S2)
+data <- rbind(data1, data2)
+```
+
+```{r}
+image(data)
+```
+
+```{r}
+autoplot(prcomp(data)) + theme_classic()
+```
+
+```{r}
+S <- diag(G)
+mu1 <- c(rep(1., F_G), rep(0, G - F_G))
+mu2 <- c(rep(0, G - F_G), rep(1., F_G))
+
+data1 <- rmvnorm(300, mu1, S)
+data2 <- rmvnorm(300, mu2, S)
+data <- rbind(data1, data2)
+image(data)
+```
+
+```{r}
+autoplot(prcomp(data)) + theme_classic()
+```
+
+
+```{r}
+S <- matrix(0.9, G, G)
+diag(S) <- 1
+
+data1 <- rmvnorm(300, mu1, S)
+data2 <- rmvnorm(300, mu2, S)
+data <- rbind(data1, data2)
+image(data)
+```
+
+```{r}
+autoplot(prcomp(data)) + theme_classic()
+```
+
+```{r}
+mu1 <- c(rep(0.5, F_G), rep(0, G - F_G))
+mu2 <- c(rep(-0.5, F_G), rep(0, G - F_G))
+
+data1 <- rmvnorm(300, mu1, S1)
+data2 <- rmvnorm(300, mu2, S1)
+data <- rbind(data1, data2)
+image(data)
+```
+```{r}
+autoplot(prcomp(data)) + theme_classic()
+```
+
+
+
+```{r}
+mu1 <- c(rep(1, F_G), rep(0, G - F_G))
+mu2 <- c(rep(0, G - F_G), rep(1, F_G))
+```
+
+```{r}
+data1 <- rmvnorm(300, mu1, S1)
+data2 <- rmvnorm(300, mu2 , S2)
+data <- rbind(data1, data2)
+image(data)
+```
+
+\[
+y_n \sim [c = 1] \cdot \mathcal{N}(\mu_1, \Sigma_1) + [c=2] \cdot \mathcal{N}(\mu_2, \Sigma_2)
+\]
+```{r}
+autoplot(prcomp(data)) + theme_classic()
+```
+
+
+
+
+
